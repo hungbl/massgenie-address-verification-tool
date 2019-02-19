@@ -1,0 +1,136 @@
+.mgHeader {
+    color: #666;
+    border-bottom: 1px solid #ddd;
+    padding: 0 0 10px;
+    margin: 0 0 10px;
+}
+
+.mgTool {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    float: left;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    opacity: 1;
+    position: relative;
+    min-height: 150px;
+    -webkit-min-logical-height: 150px;
+}
+
+.mgContent {
+    text-align: center;
+    line-height: 24px;
+    font-size: 20px;
+    margin: 0 0 30px;
+}
+
+.mgSpan {
+    width: 220px;
+}
+
+.mgFormBtn {
+    color: whitesmoke;
+    font-weight: 400;
+    border: 1px solid #272727;
+    padding: 10px;
+    width: 75px;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.mgBtn {
+    color: whitesmoke;
+    font-weight: 400;
+    border: 1px solid #272727;
+    padding: 15px;
+    margin: 15px;
+    text-decoration: none;
+}
+
+.mgToolBody {
+    padding-bottom: 5px;
+    background-size: cover;
+}
+
+.mgToolBody .innerBodyDiv{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.mgToolBody .row-fluid {
+    width: 100%;
+}
+
+.center {
+    text-align: center;
+}
+
+.left{
+    text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.row-fluid {
+    display: block;
+    float: left;
+    width: 100%;
+    min-height: 30px;
+    margin-left: 2%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.mainContent {
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    float: none!important;
+    display: inline-block!important;
+    box-shadow: 0 1px 3px rgba(34,25,25,.4);
+    -webkit-box-shadow: 0 1px 3px rgba(34,25,25,.4);
+    -moz-box-shadow: 0 1px 3px rgba(34,25,25,.4);
+    margin-bottom: 9px;
+    text-align: left;
+    min-height: 500px!important;
+}
+
+.row-fluid .width80 {
+    width: 80%;
+}
+
+.row-fluid .width40 {
+    width: 48%;
+    float: left;
+}
+
+.row-fluid .width100 {
+    width: 100%;
+}
+
+.mgTextArea {
+    min-height: 200px;
+}
+
+.message-validate {
+    color: #a94442;
+    padding-top: 10px;
+}
+
+.margin-bottom-10{
+    margin-bottom: 10px
+}
+
+.margin-right-40{
+    margin-right: 20px
+}
+
+.margin-left-40{
+    margin-left: 13px
+}
