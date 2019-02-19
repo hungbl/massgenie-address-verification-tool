@@ -90,7 +90,7 @@ class Home extends React.Component{
                   }
                   {
                     mode == 1 || mode == 3
-                    ? <input className="form-control margin-bottom-10" placeholder='Zip4' value={zip4} onChange={this.changeTextBox.bind(this, 'zip4')}/>
+                    ? <input className="form-control margin-bottom-10" placeholder='Zip5' value={zip5} onChange={this.changeTextBox.bind(this, 'zip5')}/>
                     : null
                   }
                   </div>

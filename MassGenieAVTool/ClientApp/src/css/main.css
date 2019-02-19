@@ -25,10 +25,12 @@
     line-height: 24px;
     font-size: 20px;
     margin: 0 0 30px;
+    width: 80%;
+    display: inline-block!important;
 }
 
 .mgSpan {
-    width: 220px;
+    width: 200px;
 }
 
 .mgFormBtn {

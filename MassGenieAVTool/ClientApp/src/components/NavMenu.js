@@ -22,6 +22,10 @@ export default class NavMenu extends React.Component {
         <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light >
           <Container>
             <NavbarBrand tag={Link} to="/">Shipping Services</NavbarBrand>
+            <NavbarBrand tag={Link} to="/usps-services">USPS Services</NavbarBrand>
+            <NavbarBrand tag={Link} to="/ups-services">UPS Services</NavbarBrand>
+            <NavbarBrand tag={Link} to="/dhl-services">DHL Services</NavbarBrand>
+            <NavbarBrand tag={Link} to="/fedex-services">FEDEX Services</NavbarBrand>
           </Container>
         </Navbar>
       </header>
