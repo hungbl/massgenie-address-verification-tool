@@ -10,13 +10,16 @@ const initialState = Immutable.fromJS({
     zip4: '',
     zip5: '',
     output: '',
-    userID: ''
+    userID: '',
+    trackingID: ''
 })
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case c.CHANGE_MODE:
-            return state.set('mode', action.payload);
+            const userID = state.get('userID');
+            return initialState.set('userID', userID)
+                                .set('mode', action.payload);
         case c.CHANGE_TEXT_BOX:
             return state.set(action.payload.fieldName, action.payload.value);
         case c.FETCH_OUTPUT:

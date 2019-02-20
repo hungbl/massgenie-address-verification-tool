@@ -6,7 +6,7 @@ import USPS from './components/usps';
 
 export default () => (
   <Layout>
-    <Route exact path='/' component={Home} />
+    <Route exact path='/' component={USPS} />
     <Route exact path='/usps-services' component={USPS} />
   </Layout>
 );

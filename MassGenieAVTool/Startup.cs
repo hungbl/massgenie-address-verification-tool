@@ -1,3 +1,4 @@
+using MassGenieAVTool.USPSServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,6 +22,9 @@ namespace MassGenieAVTool
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddTransient<IUSPSServices, AddressVerification>();
+            services.AddTransient<IUSPSServices, TrackingVerification>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

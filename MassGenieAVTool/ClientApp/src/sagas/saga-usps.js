@@ -8,19 +8,25 @@ export function* sagaCallUSPS(){
       const {payload} = yield take(c.CALL_API);
       try {
         let url = '';
+        let res = null;
         switch (payload.mode) {
-            case 1:
-                url = 'usps-services/address-verify';       
-                break;
-            case 2:
-                url = 'usps-services/zip-code-lookup';
-                break;
-            case 3:
-                url = 'usps-services/city-state-lookup';
-                break;
+          case 1:
+            url = 'usps-services/address-verify';
+            res = yield call(axios.post, url, payload);       
+            break;
+          case 2:
+            url = 'usps-services/zip-code-lookup';
+            res = yield call(axios.post, url, payload);
+            break;
+          case 3:
+            url = 'usps-services/city-state-lookup';
+            res = yield call(axios.post, url, payload);
+            break;
+          case 4:
+            url = 'usps-services/track-package/' + payload.userID + '/' + payload.trackingID;
+            res = yield call(axios.get, url);
+            break;
         }
-  
-        let res = yield call(axios.post, url, payload);
         if(res.data.status == "success"){
           yield put(fetchOutput(res.data.data));
         }else{

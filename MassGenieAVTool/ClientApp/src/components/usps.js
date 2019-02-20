@@ -30,7 +30,7 @@ class USPS extends React.Component{
     this.props.callApi(data);
   }
   render(){
-    const {mode, address1, address2, city, state, zip4, zip5, output, userID} = this.props.reducerUSPS.toJS();
+    const {mode, address1, address2, city, state, zip4, zip5, output, userID, trackingID} = this.props.reducerUSPS.toJS();
     return(
       <div className="container">
         <div className="alert alert-secondary">
@@ -68,6 +68,15 @@ class USPS extends React.Component{
                 </div>
               </div>
               {
+                mode == 4
+                ? <div className="row">
+                    <div className="col">
+                      <input className="form-control mb-2" placeholder='TrackingID' value={trackingID} onChange={this.changeTextBox.bind(this, 'trackingID')}/>
+                    </div>
+                  </div>
+                : null
+              }
+              {
                 mode == 1 || mode == 2
                 ? <div className="row">
                     <div className="col">
@@ -103,6 +112,13 @@ class USPS extends React.Component{
                   </div>
                 : null
               }
+              <div className="form-group text-right">
+                <button className="btn btn-success" onClick={this.callApi}>Run</button>
+              </div>
+              <div className="form-group">
+                <label>Result:</label>
+                <textarea className="form-control mgTextArea" type="text" readOnly="true" value={output}/>
+              </div>
             </div>
           </div>
         </div>

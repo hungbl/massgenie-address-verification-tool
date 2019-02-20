@@ -1,38 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml;
+using MassGenieAVTool.Model;
+using MassGenieAVTool.USPSServices;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace MassGenieAVTool.Controllers
 {
     [Route("usps-services")]
     public class USPSServicesController : Controller
     {
+        private readonly IUSPSServices _addressVerification;
+        private readonly IUSPSServices _trackingVerification;
+        public USPSServicesController()
+        {
+            _addressVerification = new AddressVerification();
+            _trackingVerification = new TrackingVerification();
+        }
+
         [HttpPost]
         [Route("address-verify")]
-        public ActionResult AddressVerify([FromBody]Address address)
+        public IActionResult AddressVerify([FromBody]Address address)
         {
             string output = "";
-            var config = new Config
-            {
-                UserID = address.UserID ?? "0",
-                Host = "http://production.shippingapis.com"
-            };
-            output = AddressVerification.AddressValidate(config, address);
-            output = output.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(output);
-
-            string json = JsonConvert.SerializeXmlNode(doc);
             try
             {
-
+                var config = GetConfig(address.UserID);
+                output = _addressVerification.AddressValidate(config, address);
                 return new JsonResult(new
                 {
-                    data = json,
+                    data = output,
                     status = "success",
                     statusCode = 1,
                     message = ""
@@ -52,26 +47,16 @@ namespace MassGenieAVTool.Controllers
 
         [HttpPost]
         [Route("zip-code-lookup")]
-        public ActionResult ZipCodeLookup([FromBody]Address address)
+        public IActionResult ZipCodeLookup([FromBody]Address address)
         {
             string output = "";
-            var config = new Config
-            {
-                UserID = address.UserID ?? "0",
-                Host = "http://production.shippingapis.com"
-            };
-            output = AddressVerification.ZipCodeLookup(config, address);
-            output = output.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(output);
-
-            string json = JsonConvert.SerializeXmlNode(doc);
             try
             {
-
+                var config = GetConfig(address.UserID);
+                output = _addressVerification.ZipCodeLookup(config, address);
                 return new JsonResult(new
                 {
-                    data = json,
+                    data = output,
                     status = "success",
                     statusCode = 1,
                     message = ""
@@ -91,25 +76,16 @@ namespace MassGenieAVTool.Controllers
 
         [HttpPost]
         [Route("city-state-lookup")]
-        public ActionResult CityStateLookup([FromBody]Address address)
+        public IActionResult CityStateLookup([FromBody]Address address)
         {
             string output = "";
             try
             {
-                var config = new Config
-                {
-                    UserID = address.UserID ?? "0",
-                    Host = "http://production.shippingapis.com"
-                };
-                output = AddressVerification.CityStateLookup(config, address);
-                output = output.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(output);
-
-                string json = JsonConvert.SerializeXmlNode(doc);
+                var config = GetConfig(address.UserID);
+                output = _addressVerification.CityStateLookup(config, address);
                 return new JsonResult(new
                 {
-                    data = json,
+                    data = output,
                     status = "success",
                     statusCode = 1,
                     message = ""
@@ -125,6 +101,44 @@ namespace MassGenieAVTool.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("track-package/{userID}/{trackingID}")]
+        public IActionResult TrackPackage(string userID, string trackingID)
+        {
+            string output = "";
+            try
+            {
+                var config = GetConfig(userID);
+                output = _trackingVerification.TrackPackage(config, trackingID);
+                return new JsonResult(new
+                {
+                    data = output,
+                    status = "success",
+                    statusCode = 1,
+                    message = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new
+                {
+                    data = output,
+                    status = "error",
+                    statusCode = 0,
+                    message = ex.Message
+                });
+            }
+        }
+
+        private Config GetConfig(string userID)
+        {
+            return new Config
+            {
+                UserID = userID ?? "0",
+                Host = "http://production.shippingapis.com"
+            };
         }
     }
 }
