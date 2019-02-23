@@ -52,13 +52,19 @@ namespace MassGenieAVTool.USPSServices
                 return response;
             }
 
-            if (!address.Address1.Equals(addressResponse.Address1)
-                || !address.City.Equals(addressResponse.City)
+            if (!address.Address1.Equals(addressResponse.Address1) & !address.Address1.Equals(addressResponse.Address2))
+            {
+                response.StatusID = 0;
+                response.Message = "Address line 1 incorrect";
+                return response;
+            }
+
+            if (!address.City.Equals(addressResponse.City)
                 || !address.State.Equals(addressResponse.State)
                 || !address.Zip5.Equals(addressResponse.Zip5))
             {
                 response.StatusID = 0;
-                response.Message = "Address have 1 or more incorrect field";
+                response.Message = "Address have one or more incorrect field";
                 return response;
             }
 
