@@ -20,8 +20,32 @@ namespace MassGenieAVTool.USPSServices
             var validateUrl = string.Format(template, config.Host, config.UserID, 
                                             address.Address1, address.Address2, address.City, address.State, address.Zip5);
             string resultXML = web.DownloadString(validateUrl);
-            
-            return ConvertXMLToJson(resultXML);
+            resultXML = resultXML.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(resultXML);
+
+            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address") == null)
+            {
+                return "2"; // system error or api error
+            }
+
+            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description") == null)
+            {
+                return "1"; // real address
+            }
+
+            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description") != null)
+            {
+                var desc = xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description").InnerText;
+                if (desc.Contains("Address Not Found") || desc.Contains("Invalid"))
+                {
+                    return "0"; // not found
+                }
+                return "2"; // system error or api error
+            }
+
+            return "2"; // system error or api error
+            //return ConvertXMLToJson(resultXML);
         }
 
         /// <summary>
