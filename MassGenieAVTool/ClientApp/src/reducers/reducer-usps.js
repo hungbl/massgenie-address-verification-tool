@@ -3,14 +3,14 @@ import * as c from '../constants/constant';
 
 const initialState = Immutable.fromJS({
     mode: 1,
-    address1: '',
+    address1: '1204 Waverly Way',
     address2: '',
-    city: '',
-    state: '',
+    city: 'Longwood',
+    state: 'ME',
     zip4: '',
-    zip5: '',
+    zip5: '32750',
     output: '',
-    userID: '',
+    userID: '968MASSG7302',
     trackingID: ''
 })
 

@@ -1,5 +1,7 @@
 ﻿using MassGenieAVTool.Model;
+using MassGenieAVTool.Utils;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Net;
 using System.Xml;
 
@@ -7,13 +9,18 @@ namespace MassGenieAVTool.USPSServices
 {
     public class AddressVerification : IUSPSServices
     {
+        private ISerializer _serializer;
+        public AddressVerification(ISerializer serializer)
+        {
+            _serializer = serializer;
+        }
         /// <summary>
         /// verify if address exist or not
         /// </summary>
         /// <param name="config"></param>
         /// <param name="address"></param>
         /// <returns></returns>
-        public string AddressValidate(Config config, Address address)
+        public AddressValidateResponse AddressValidate(Config config, Address address)
         {
             var web = new WebClient();
             var template = Template.AddressValidateTemplate;
@@ -21,31 +28,44 @@ namespace MassGenieAVTool.USPSServices
                                             address.Address1, address.Address2, address.City, address.State, address.Zip5);
             string resultXML = web.DownloadString(validateUrl);
             resultXML = resultXML.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.LoadXml(resultXML);
-
-            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address") == null)
+            var response = _serializer.Deserialize<AddressValidateResponse>(resultXML);
+            if(response.Addresses == null || response.Addresses.Count == 0 || response.Addresses.First() == null)
             {
-                return "2"; // system error or api error
+                response.StatusID = 2;
+                response.Message = "There is an api error happended";
+                return response;
             }
 
-            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description") == null)
-            {
-                return "1"; // real address
-            }
+            var addressResponse = response.Addresses.First();
 
-            if (xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description") != null)
+            if (addressResponse.Error != null)
             {
-                var desc = xDoc.SelectSingleNode("/AddressValidateResponse/Address/Error/Description").InnerText;
-                if (desc.Contains("Address Not Found") || desc.Contains("Invalid"))
+                if (addressResponse.Error.Description.Contains("Address Not Found") || addressResponse.Error.Description.Contains("Invalid"))
                 {
-                    return "0"; // not found
+                    response.StatusID = 0;
+                    response.Message = "Address error or contain incorrect field";
+                    return response;
                 }
-                return "2"; // system error or api error
+
+                response.StatusID = 2;
+                response.Message = "Other Error";
+                return response;
             }
 
-            return "2"; // system error or api error
-            //return ConvertXMLToJson(resultXML);
+            if (!address.Address1.Equals(addressResponse.Address1)
+                || !address.City.Equals(addressResponse.City)
+                || !address.State.Equals(addressResponse.State)
+                || !address.Zip5.Equals(addressResponse.Zip5))
+            {
+                response.StatusID = 0;
+                response.Message = "Address have 1 or more incorrect field";
+                return response;
+            }
+
+            response.StatusID = 2;
+            response.Message = "Empty result";
+            return response;
+
         }
 
         /// <summary>
@@ -96,5 +116,6 @@ namespace MassGenieAVTool.USPSServices
 
             return JsonConvert.SerializeXmlNode(xDoc);
         }
+
     }
 }

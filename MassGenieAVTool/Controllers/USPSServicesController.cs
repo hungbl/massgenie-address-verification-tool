@@ -1,7 +1,9 @@
 ﻿using System;
 using MassGenieAVTool.Model;
 using MassGenieAVTool.USPSServices;
+using MassGenieAVTool.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace MassGenieAVTool.Controllers
 {
@@ -10,9 +12,11 @@ namespace MassGenieAVTool.Controllers
     {
         private readonly IUSPSServices _addressVerification;
         private readonly IUSPSServices _trackingVerification;
-        public USPSServicesController()
+        private readonly ISerializer _serializer;
+        public USPSServicesController(ISerializer serializer)
         {
-            _addressVerification = new AddressVerification();
+            
+            _addressVerification = new AddressVerification(serializer);
             _trackingVerification = new TrackingVerification();
         }
 
@@ -24,10 +28,10 @@ namespace MassGenieAVTool.Controllers
             try
             {
                 var config = GetConfig(address.UserID);
-                output = _addressVerification.AddressValidate(config, address);
+                var response = _addressVerification.AddressValidate(config, address);
                 return new JsonResult(new
                 {
-                    data = output,
+                    data = JsonConvert.SerializeObject(response),
                     status = "success",
                     statusCode = 1,
                     message = ""

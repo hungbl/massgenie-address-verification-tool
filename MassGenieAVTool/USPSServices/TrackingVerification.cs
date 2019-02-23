@@ -20,7 +20,7 @@ namespace MassGenieAVTool.USPSServices
             return ConvertXMLToJson(resultXML);
         }
 
-        public string AddressValidate(Config config, Address address)
+        public AddressValidateResponse AddressValidate(Config config, Address address)
         {
             throw new NotImplementedException();
         }
