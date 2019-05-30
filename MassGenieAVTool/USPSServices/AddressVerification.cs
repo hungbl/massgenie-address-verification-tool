@@ -29,6 +29,7 @@ namespace MassGenieAVTool.USPSServices
             string resultXML = web.DownloadString(validateUrl);
             resultXML = resultXML.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
             var response = _serializer.Deserialize<AddressValidateResponse>(resultXML);
+
             if(response.Addresses == null || response.Addresses.Count == 0 || response.Addresses.First() == null)
             {
                 response.StatusID = 2;
@@ -38,6 +39,16 @@ namespace MassGenieAVTool.USPSServices
 
             var addressResponse = response.Addresses.First();
 
+            if (addressResponse.DPVConfirmation.Equals("Y")
+                || addressResponse.DPVConfirmation.Equals("D")
+                || addressResponse.DPVConfirmation.Equals("S"))
+            {
+                response.StatusID = 1;
+                response.Message = $"Address was confirmed with code {address.DPVConfirmation}";
+                return response;
+            }
+
+            //address contain error
             if (addressResponse.Error != null)
             {
                 if (addressResponse.Error.Description.Contains("Address Not Found") || addressResponse.Error.Description.Contains("Invalid"))

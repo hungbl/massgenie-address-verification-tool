@@ -27,5 +27,7 @@ namespace MassGenieAVTool.Model
         [XmlElement("Error")]
         public Error Error { get; set; }
         public string UserID { get; set; }
+        [XmlElement("DPVConfirmation")]
+        public string DPVConfirmation { get; set; }
     }
 }
